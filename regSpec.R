@@ -160,10 +160,10 @@ regspec = function(A, k, inits = 10, tau = -1, quiet = F, project = T){
     # make some plots.
     plot(-sort(-s$d)/sum(s$d), main = "top singular values")
     print("press 1 for plot of eigenvectors.")
-    x = scan()
+    x = scan(what = "character")
     
     if(length(x) == 0) return(outDat)
-    if(x!=1) return(outDat)
+    if(x!="1") return(outDat)
     
     
     # if you want to plot the data, downsample to 1000 data points.
