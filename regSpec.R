@@ -162,6 +162,7 @@ regspec = function(A, k, inits = 10, tau = -1, quiet = F, project = T){
     print("press 1 for plot of eigenvectors.")
     x = scan()
     
+    if(length(x) == 0) return(outDat)
     if(x!=1) return(outDat)
     
     
