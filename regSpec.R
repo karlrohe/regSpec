@@ -83,7 +83,7 @@ kmppi = function(X,k, inits =10){
 
 
 
-regspec = function(A, k, inits = 10, tau = -1, quiet = F, project = T){
+regspec = function(A, k, inits = 10, tau = -1, quiet = T, project = T){
   # A is a matrix or a Matrix.
   # k is the number of clusters.  If A is asymmetric, allows a 2 vector.  
   #   First element is number of sending clusters.  Second element is number of receiving clusters.
