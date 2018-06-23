@@ -93,6 +93,19 @@ regspec = function(A, k, inits = 10, tau = -1, quiet = T, project = T){
   # For symmetric calculations, it would be faster to find eigenvectors. 
   #  irlba uses default parameters
   
+  #process igraph into adjacency matrix
+  if(class(A) == "igraph"){
+    if(is.directed(A)){
+      if(!quiet) print("transforming directed igraph into adjacency matrix")
+      A = as_adj(A)
+    }
+    else
+    {
+      if(!quiet) print("transforming undirected igraph into symmetric adjacency matrix")
+      A = as_adj(A, type = "both")
+    }
+  }
+  
   #   ensure arguments to function are reasonable
   sym = F
   if(!isSymmetric(object = A)) if(!quiet) print("adjacency matrix is not symmetric. So, this function will perform a directed analysis akin to di-sim.")
