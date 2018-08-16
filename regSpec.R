@@ -13,8 +13,7 @@
 # 1) For symmetric calculations, it would be faster to find eigenvectors. 
 #     With current R libraries, it looks like one would need to use RcppEigen
 #     to access the c++ library Eigen. Then, find the relevant function in that library.
-# 2) Currently has adjMat as input.  Should also allow igraph object. 
-# 3) should we find k+1 eigenvalues to inspect the eigengap?
+# 2) should we find k+1 eigenvalues to inspect the eigengap?
 
 #  irlba uses default parameters
 
@@ -93,6 +92,19 @@ regspec = function(A, k, inits = 10, tau = -1, quiet = T, project = T){
   # For symmetric calculations, it would be faster to find eigenvectors. 
   #  irlba uses default parameters
   
+  #process igraph into adjacency matrix
+  if(class(A) == "igraph"){
+    if(is.directed(A)){
+      if(!quiet) print("transforming directed igraph into adjacency matrix")
+      A = as_adj(A)
+    }
+    else
+    {
+      if(!quiet) print("transforming undirected igraph into symmetric adjacency matrix")
+      A = as_adj(A, type = "both")
+    }
+  }
+  
   #   ensure arguments to function are reasonable
   sym = F
   if(!isSymmetric(object = A)) if(!quiet) print("adjacency matrix is not symmetric. So, this function will perform a directed analysis akin to di-sim.")
@@ -162,19 +174,21 @@ regspec = function(A, k, inits = 10, tau = -1, quiet = T, project = T){
     print("press 1 for plot of eigenvectors.")
     x = scan(what = "character")
     
-    if(length(x) == 0) return(outDat)
-    if(x!="1") return(outDat)
+    if(length(x) != 0) {
+      if(x=="1") {
     
     
-    # if you want to plot the data, downsample to 1000 data points.
-    if(nr > 1000){
-      samp = sample(nr,1000)
+        # if you want to plot the data, downsample to 1000 data points.
+        if(nr > 1000){
+          samp = sample(nr,1000)
+        }
+        if(nr<1001) samp = 1:nr
+        if(sym) plot(as.data.frame(nu[samp,]), col = kmLeft$clust[samp], 
+                     main ="leading eigenvectors,\nprojected on sphere and colored by cluster")
+        if(!sym) plot(as.data.frame(nu[samp,]), col = kmLeft$clust[samp], 
+                      main ="leading left singular vectors,\nprojected on sphere and colored by cluster")
+      }
     }
-    if(nr<1001) samp = 1:nr
-    if(sym) plot(as.data.frame(nu[samp,]), col = kmLeft$clust[samp], 
-                 main ="leading eigenvectors,\nprojected on sphere and colored by cluster")
-    if(!sym) plot(as.data.frame(nu[samp,]), col = kmLeft$clust[samp], 
-                  main ="leading left singular vectors,\nprojected on sphere and colored by cluster")
   }
   return(outDat)
 }
